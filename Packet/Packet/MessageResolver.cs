@@ -28,7 +28,7 @@ namespace MyPacket
         bool typeCompleted;
         bool completed;
 
-        CompletedMessageCallback completedCallback;
+        CompletedMessageCallback? completedCallback;
 
         public MessageResolver()
         {
@@ -50,7 +50,7 @@ namespace MyPacket
 
                 messageSize = GetBodySize();
 
-                if (messageSize < 0 || Defines.COMPLETE_MESSAGE_SIZE_CLIENT < messageSize) return;
+                if (messageSize < 0 || Defines.MESSAGE_BUFFER_SIZE < messageSize) return;
             }
             if (!typeCompleted)
             {
@@ -78,7 +78,7 @@ namespace MyPacket
             ClearBuffer();
         }
 
-        private void ClearBuffer()
+        public void ClearBuffer()
         {
             Array.Clear(messageBuffer, 0, messageBuffer.Length);
             Array.Clear(headerBuffer, 0, headerBuffer.Length);
@@ -97,11 +97,11 @@ namespace MyPacket
 
         private int GetBodySize() => BitConverter.ToInt32(headerBuffer, 0);
 
-        private bool ReadBody(byte[] buffer, ref int srcPos) => ReadUntil(buffer, ref srcPos, headerBuffer, ref headPos, Defines.HEADER_BUFFER_SIZE);
+        private bool ReadHead(byte[] buffer, ref int srcPos) => ReadUntil(buffer, ref srcPos, headerBuffer, ref headPos, Defines.HEADER_BUFFER_SIZE);
 
         private bool ReadType(byte[] buffer, ref int srcPos) => ReadUntil(buffer, ref srcPos, typeBuffer, ref typePos, Defines.TYPE_BUFFER_SIZE);
 
-        private bool ReadHead(byte[] buffer, ref int srcPos) => ReadUntil(buffer, ref srcPos, messageBuffer, ref currPos, messageSize);
+        private bool ReadBody(byte[] buffer, ref int srcPos) => ReadUntil(buffer, ref srcPos, messageBuffer, ref currPos, messageSize);
 
         private bool ReadUntil(byte[] buffer, ref int srcPos, byte[] destBuffer, ref int destPos, int toSize)
         {
