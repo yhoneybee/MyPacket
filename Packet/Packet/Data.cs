@@ -32,18 +32,7 @@ namespace MyPacket
             Marshal.Copy(array, 0, ptr, size);
             var s = Marshal.PtrToStructure<T>(ptr);
             Marshal.FreeHGlobal(ptr);
-            return s;
+            return s!;
         }
-    }
-
-    [Serializable]
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class ChatPacket : Data<ChatPacket>
-    {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
-        public string? id;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
-        public string? chat;
     }
 }
