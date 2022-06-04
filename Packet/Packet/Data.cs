@@ -10,16 +10,16 @@ namespace MyPacket
     [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class Data<T>
-        where T : class
+        where T : new()
     {
         public Data() { }
 
-        public byte[] Serialize()
+        public static byte[] Serialize(T data)
         {
             var size = Marshal.SizeOf<T>();
             var array = new byte[size];
             var ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(array, ptr, true);
+            Marshal.StructureToPtr(data!, ptr, false);
             Marshal.Copy(ptr, array, 0, size);
             Marshal.FreeHGlobal(ptr);
             return array;

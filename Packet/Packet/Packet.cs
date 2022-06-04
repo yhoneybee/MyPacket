@@ -21,8 +21,8 @@ namespace MyPacket
 
         public void SetData(byte[] data, int len)
         {
-            data = new byte[len];
-            Array.Copy(this.data!, data, len);
+            this.data = new byte[len];
+            Array.Copy(data, this.data!, len);
         }
 
         public byte[] GetSendBytes()

@@ -7,50 +7,53 @@ using System.Threading.Tasks;
 
 namespace MyPacket
 {
-    public class SocketAsyncEventArgsPool
+    public class SocketAsyncEventArgsPool : Singleton<SocketAsyncEventArgsPool>
     {
-        static SocketAsyncEventArgsPool? instance;
-        public static SocketAsyncEventArgsPool Instance
+        Stack<SocketAsyncEventArgs>? pool;
+
+        override protected void Init()
         {
-            get
+            pool = new Stack<SocketAsyncEventArgs>(Defines.MAX_CONNECTION);
+
+            for (int i = 0; i < Defines.MAX_CONNECTION; i++)
             {
-                if (instance == null)
-                    instance = new SocketAsyncEventArgsPool(30);
-                return instance;
+                SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+                pool.Push(args);
             }
         }
 
-        Stack<SocketAsyncEventArgs>? pool;
-
-        public SocketAsyncEventArgsPool(int capacity)
+        public void Push(SocketAsyncEventArgs item)
         {
-            SetCapacity(capacity);
-        }
-
-        public void SetCapacity(int capacity)
-        {
-            pool = new Stack<SocketAsyncEventArgs>(capacity);
-            for (int i = 0; i < capacity; i++)
-                pool.Push(new SocketAsyncEventArgs());
-        }
-
-        public int Count => pool!.Count;
-
-        public void Push(SocketAsyncEventArgs args)
-        {
-            if (pool == null) return;
-            lock (pool)
+            if (item == null)
             {
-                pool.Push(args);
+                throw new ArgumentNullException("item is null");
+            }
+
+            lock (pool!)
+            {
+                if (pool.Count >= Defines.MAX_CONNECTION)
+                {
+                    item.Dispose();
+                    return;
+                }
+                pool.Push(item);
             }
         }
 
         public SocketAsyncEventArgs Pop()
         {
-            lock (pool!)
+            lock (pool)
             {
-                return pool!.Pop();
+                if (pool.Count > 0)
+                    return pool.Pop();
+                else
+                {
+                    SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+                    return args;
+                }
             }
         }
+
+        public int Count => pool.Count;
     }
 }

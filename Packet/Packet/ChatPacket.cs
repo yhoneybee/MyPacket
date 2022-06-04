@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace MyPacket
 {
-    public enum ChatType
+    [Serializable]
+    public enum ChatType : short
     {
         ALL,
         ROOM,
@@ -15,10 +16,11 @@ namespace MyPacket
     }
 
     [Serializable]
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public class ChatPacket : Data<ChatPacket>
     {
-        public ChatType ChatType;
+        [MarshalAs(UnmanagedType.I2)]
+        public ChatType chatType;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
         public string? id;
