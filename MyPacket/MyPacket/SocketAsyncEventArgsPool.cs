@@ -9,7 +9,7 @@ namespace MyPacket
 {
     public class SocketAsyncEventArgsPool : Singleton<SocketAsyncEventArgsPool>
     {
-        Stack<SocketAsyncEventArgs>? pool;
+        Stack<SocketAsyncEventArgs> pool;
 
         override protected void Init()
         {
@@ -29,7 +29,7 @@ namespace MyPacket
                 throw new ArgumentNullException("item is null");
             }
 
-            lock (pool!)
+            lock (pool)
             {
                 if (pool.Count >= Defines.MAX_CONNECTION)
                 {

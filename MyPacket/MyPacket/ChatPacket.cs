@@ -23,9 +23,9 @@ namespace MyPacket
         public ChatType chatType;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
-        public string? id;
+        public string id;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
-        public string? chat;
+        public string chat;
     }
 }

@@ -19,7 +19,7 @@ namespace MyPacket
             var size = Marshal.SizeOf<T>();
             var array = new byte[size];
             var ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(data!, ptr, false);
+            Marshal.StructureToPtr(data, ptr, false);
             Marshal.Copy(ptr, array, 0, size);
             Marshal.FreeHGlobal(ptr);
             return array;
@@ -32,7 +32,7 @@ namespace MyPacket
             Marshal.Copy(array, 0, ptr, size);
             var s = Marshal.PtrToStructure<T>(ptr);
             Marshal.FreeHGlobal(ptr);
-            return s!;
+            return s;
         }
     }
 }

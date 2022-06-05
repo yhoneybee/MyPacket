@@ -9,7 +9,7 @@ namespace MyPacket
     public abstract class Singleton<T>
         where T : Singleton<T>, new()
     {
-        static T? instance;
+        static T instance;
         public static T Instance
         {
             get

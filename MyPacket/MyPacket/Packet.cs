@@ -15,20 +15,20 @@ namespace MyPacket
     public class Packet
     {
         public short type { get; set; }
-        public byte[]? data { get; set; }
+        public byte[] data { get; set; }
 
         public Packet() { }
 
         public void SetData(byte[] data, int len)
         {
             this.data = new byte[len];
-            Array.Copy(data, this.data!, len);
+            Array.Copy(data, this.data, len);
         }
 
         public byte[] GetSendBytes()
         {
             byte[] type_bytes = BitConverter.GetBytes(type);
-            int header_size = data!.Length;
+            int header_size = data.Length;
             byte[] header_bytes = BitConverter.GetBytes(header_size);
             byte[] send_bytes = new byte[header_bytes.Length + type_bytes.Length + data.Length];
 

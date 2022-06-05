@@ -28,7 +28,7 @@ namespace MyPacket
         bool typeCompleted;
         bool completed;
 
-        CompletedMessageCallback? completedCallback;
+        CompletedMessageCallback completedCallback;
 
         public MessageResolver()
         {
