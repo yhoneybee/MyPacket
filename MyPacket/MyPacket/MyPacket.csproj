@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatPacket.cs" />
+    <Compile Include="Packets.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Defines.cs" />
     <Compile Include="MessageResolver.cs" />

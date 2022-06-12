@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace MyPacket
 {
-    public enum PacketType
-    {
-        CHAT_PACKET,
-        END,
-    }
-
     public class Packet
     {
         public short type { get; set; }
@@ -38,5 +32,9 @@ namespace MyPacket
 
             return send_bytes;
         }
+
+        public T GetPacket<T>()
+            where T : new()
+            => Data<T>.Deserialize(data);
     }
 }
