@@ -70,8 +70,7 @@ namespace MyPacket
             }
 
             Packet packet = new Packet();
-            packet.type = messageType;
-            packet.SetData(messageBuffer, messageSize);
+            packet.SetData((PacketType)messageType, messageBuffer, messageSize);
 
             completedCallback(packet);
 

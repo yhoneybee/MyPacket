@@ -13,10 +13,18 @@ namespace MyPacket
 
         public Packet() { }
 
-        public void SetData(byte[] data, int len)
+        public void SetData(PacketType packetType, byte[] data, int len)
         {
+            type = ((short)packetType);
             this.data = new byte[len];
             Array.Copy(data, this.data, len);
+        }
+
+        public void SetData(PacketType packetType, byte[] data)
+        {
+            type = ((short)packetType);
+            this.data = new byte[data.Length];
+            Array.Copy(data, this.data, this.data.Length);
         }
 
         public byte[] GetSendBytes()
