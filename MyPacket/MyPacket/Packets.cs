@@ -93,10 +93,14 @@ namespace MyPacket
     }
 
     [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public struct RoomInfo
     {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
         public string name;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
         public string player1;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
         public string player2;
         public bool player1Ready;
         public bool player2Ready;
@@ -134,6 +138,27 @@ namespace MyPacket
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class RES_CreateRoom : Data<RES_CreateRoom>
+    {
+        public bool completed;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string reason;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
+        public string roomName;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class RES_EnterRoom : Data<RES_EnterRoom>
+    {
+        public bool completed;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string reason;
+        public RoomInfo roomInfo;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public class REQ : Data<REQ>
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 10)]
@@ -164,15 +189,7 @@ namespace MyPacket
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-    public class REQ_CreateRoom : Data<REQ_CreateRoom>
-    {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
-        public string roomName;
-    }
-
-    [Serializable]
-    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
-    public class REQ_EnterRoom : Data<REQ_EnterRoom>
+    public class REQ_CreateEnterRoom : Data<REQ_CreateEnterRoom>
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
         public string roomName;
