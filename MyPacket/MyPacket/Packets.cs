@@ -25,8 +25,13 @@ namespace MyPacket
         RES_CREATE_ROOM_PACKET,
         REQ_ENTER_ROOM_PACKET,
         RES_ENTER_ROOM_PACKET,
+
+        RES_OTHER_USER_ENTER_ROOM_PACKET,
+
         REQ_LEAVE_ROOM_PACKET,
         RES_LEAVE_ROOM_PACKET,
+
+        RES_OTHER_USER_LEAVE_ROOM_PACKET,
 
         // 방 갱신
         REQ_ROOMS_PACKET,
@@ -114,13 +119,14 @@ namespace MyPacket
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
         public string reason;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public RoomInfo[] roomInfo;
+        public RoomInfo[] roomInfos;
     }
 
     [Serializable]
     public struct UserInfo
     {
         public string id;
+        public bool isLogined;
         public bool isPlayingGame;
         public int win;
         public int lose;
