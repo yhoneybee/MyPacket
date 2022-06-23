@@ -11,7 +11,8 @@ namespace MyPacket
     public enum PacketType
     {
         // 연결
-        CONNECTED,
+        REQ_CONNECTED,
+        RES_CONNECTED,
 
         // 회원가입, 로그인
         REQ_SIGNIN_PACKET,
@@ -68,7 +69,8 @@ namespace MyPacket
         RES_LOGOUT_PACKET,
 
         // 연결 끊김
-        DISCONNECTED,
+        REQ_DISCONNECTED,
+        RES_DISCONNECTED,
         END,
     }
 
@@ -76,16 +78,30 @@ namespace MyPacket
     public enum CharactorState : short
     {
         IDLE,
+        CROUCHING,
         CROUCH,
         WALK,
         RUN,
         JUMP,
         FALL,
-        ATTACK,
+        ATTACK_WEAK,
+        ATTACK_STRONG,
+        ATTACK_CROUCH,
+        ATTACK_JUMP,
+        ATTACK_COMMAND_WEAK,
+        ATTACK_COMMAND_STRONG,
         DEFENCE,
         HIT,
+        CORUCH_HIT,
         FLY,
         DIE,
+    }
+
+    [Serializable]
+    public enum CharactorType : short
+    {
+        Samdae,
+        Kanzi,
     }
 
     [Serializable]
@@ -161,6 +177,16 @@ namespace MyPacket
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
         public string reason;
         public RoomInfo roomInfo;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class RES_StartGame : Data<RES_StartGame>
+    {
+        public bool completed;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string reason;
+        public int playerNum;
     }
 
     [Serializable]
