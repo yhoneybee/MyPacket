@@ -142,8 +142,6 @@ namespace MyPacket
     public struct UserInfo
     {
         public string id;
-        public bool isLogined;
-        public bool isPlayingGame;
         public int win;
         public int lose;
     }
