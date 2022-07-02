@@ -10,29 +10,39 @@ namespace MyPacket
     [Serializable]
     public enum PacketType
     {
+        #region connect, disconnect
+
         // 연결
         REQ_CONNECTED,
         RES_CONNECTED,
 
-        // 회원가입, 로그인
-        REQ_SIGNIN_PACKET,
-        RES_SIGNIN_PACKET,
+        // 연결 끊김
+        REQ_DISCONNECTED,
+        RES_DISCONNECTED,
 
+        #endregion
+
+        #region login, out / sign
+
+        // 로그인
         REQ_LOGIN_PACKET,
         RES_LOGIN_PACKET,
 
-        // 방 생성, 접속, 퇴장
-        REQ_CREATE_ROOM_PACKET,
-        RES_CREATE_ROOM_PACKET,
-        REQ_ENTER_ROOM_PACKET,
-        RES_ENTER_ROOM_PACKET,
+        // 로그아웃
+        REQ_LOGOUT_PACKET,
+        RES_LOGOUT_PACKET,
 
-        RES_OTHER_USER_ENTER_ROOM_PACKET,
+        // 회원가입
+        REQ_SIGNIN_PACKET,
+        RES_SIGNIN_PACKET,
 
-        REQ_LEAVE_ROOM_PACKET,
-        RES_LEAVE_ROOM_PACKET,
+        #endregion
 
-        RES_OTHER_USER_LEAVE_ROOM_PACKET,
+        #region lobby
+
+        // 채팅
+        REQ_CHAT_PACKET,
+        RES_CHAT_PACKET,
 
         // 방 갱신
         REQ_ROOMS_PACKET,
@@ -42,35 +52,64 @@ namespace MyPacket
         REQ_USER_PACKET,
         RES_USER_PACKET,
 
-        // 레디, 시작
+        #endregion
+
+        #region room
+
+        // 방 생성
+        REQ_CREATE_ROOM_PACKET,
+        RES_CREATE_ROOM_PACKET,
+
+        // 방 접속
+        REQ_ENTER_ROOM_PACKET,
+        RES_ENTER_ROOM_PACKET,
+
+        // 방 퇴장
+        REQ_LEAVE_ROOM_PACKET,
+        RES_LEAVE_ROOM_PACKET,
+
+        // 누군가 들어왔을 때
+        RES_OTHER_USER_ENTER_ROOM_PACKET,
+
+        // 누군가 나갔을 때
+        RES_OTHER_USER_LEAVE_ROOM_PACKET,
+
+        // 레디
         REQ_READY_GAME_PACKET,
         RES_READY_GAME_PACKET,
+
+        // 시작
         REQ_START_GAME_PACKET,
         RES_START_GAME_PACKET,
 
-        // 3판2선에 대한 승패
-        REQ_SET_WIN_PACKET,
-        REQ_SET_LOSE_PACKET,
+        #endregion
 
-        // 게임에 대한 승패
-        RES_GAME_WIN_PACKET,
-        RES_GAME_LOSE_PACKET,
+        #region select
 
-        // 채팅
-        REQ_CHAT_PACKET,
-        RES_CHAT_PACKET,
+        // 선택
+        REQ_SELECTCHARACTOR,
+        RES_SELECTCHARACTOR,
+
+        #endregion
+
+        #region ingame
 
         // 캐릭터
         REQ_CHARACTOR_PACKET,
         RES_CHARACTOR_PACKET,
 
-        // 로그아웃
-        REQ_LOGOUT_PACKET,
-        RES_LOGOUT_PACKET,
+        // 게임 시간
+        RES_GAME_TIME_PACKET,
 
-        // 연결 끊김
-        REQ_DISCONNECTED,
-        RES_DISCONNECTED,
+        // 게임에 대한 승패
+        REQ_GAME_WIN_PACKET,
+        REQ_GAME_LOSE_PACKET,
+
+        // 게임 종료
+        RES_GAME_END_PACKET,
+
+        #endregion
+
         END,
     }
 
@@ -92,8 +131,9 @@ namespace MyPacket
         ATTACK_COMMAND_STRONG,
         DEFENCE,
         HIT,
-        CORUCH_HIT,
+        CROUCH_HIT,
         FLY,
+        LAND,
         DIE,
     }
 
@@ -139,11 +179,13 @@ namespace MyPacket
     }
 
     [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public struct UserInfo
     {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
         public string id;
-        public int win;
-        public int lose;
+        public uint win;
+        public uint lose;
     }
 
     [Serializable]
@@ -175,6 +217,9 @@ namespace MyPacket
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
         public string reason;
         public RoomInfo roomInfo;
+        public UserInfo player1;
+        public UserInfo player2;
+        public bool host;
     }
 
     [Serializable]
@@ -185,6 +230,28 @@ namespace MyPacket
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
         public string reason;
         public int playerNum;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class RES_GameTime : Data<RES_GameTime>
+    {
+        public bool completed;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string reason;
+        public int gameTime;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class RES_OtherUser : Data<RES_OtherUser>
+    {
+        public bool completed;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string reason;
+        public RoomInfo roomInfo;
+        public UserInfo player1;
+        public UserInfo player2;
     }
 
     [Serializable]
@@ -237,7 +304,17 @@ namespace MyPacket
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public class REQ_Rooms : Data<REQ_Rooms>
     {
-        public int startIndex;
+        public int page;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class REQ_StartGame : Data<REQ_StartGame>
+    {
+        public bool completed;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string reason;
+        public int playerNum;
     }
 
     [Serializable]
@@ -262,9 +339,16 @@ namespace MyPacket
         public float dir;
 
         public float posX;
-        public float posY;
 
         public float hp;
-        public float mana;
+    }
+
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public class REQ_RES_Select : Data<REQ_RES_Select>
+    {
+        [MarshalAs(UnmanagedType.I2)]
+        public CharactorType charactorType;
+        public int playerNum;
     }
 }
